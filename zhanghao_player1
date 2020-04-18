@@ -1,0 +1,72 @@
+$(function(){
+
+let url=$('.list_player').attr('url');
+//手机菜单点击****************************************************************
+$('.list_content h4 p').click(function(){
+	let ul=$(this).siblings('ul');
+	if(ul.is(':hidden')){
+		ul.show();
+	}else{
+		ul.hide();
+	}
+});
+
+
+// 比例、备注、手机**********************************************************************
+//隐藏按钮
+// $(document).click(function(){
+// 	$('.bili input').css('border','none').each(function(){
+// 		$(this).val($(this).attr('val'));
+// 	}).siblings('button').hide();
+// });
+
+// 比例和备注获得焦点
+$('.bili input,.beizhu_player input').focus(function(e){
+	e.stopPropagation();
+	e.preventDefault();
+
+	$(this).parent().find('button').show();
+	$(this).css('border','1px solid #ddd');
+
+	$(this).parents('li').siblings().find('button').hide();
+	$(this).parents('li').siblings().find('input').css('border','none');
+});
+
+// 比例、备注、手机、取消
+$('.beizhu_player button').click(function(e){
+	e.stopPropagation();
+	e.preventDefault();
+	
+	let type=$(this).attr('type');
+	let span=$(this).parent();
+
+	if(type=='del'){
+		$(this).siblings('input').css('border','none').val($(this).siblings('input').attr('val')).siblings('button').hide();
+		return false;
+	}
+
+	let user_id=$(this).parents('li').attr('user_id');
+	let val=$(this).siblings('input').val();
+
+	$.ajax({
+		type:'post',
+		url:url,
+		dataType:'json',
+		data:{type:type,_id:user_id,val:val},
+		success:function(res){
+			if(res==200){
+				alert('修改成功！');
+				span.find('button').hide();
+				span.find('input').css('border','none');
+
+				log_insert(user_id,'修改备注：'+val);
+			}
+		}
+	});
+});
+
+
+
+
+
+});
